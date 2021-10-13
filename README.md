@@ -6,7 +6,7 @@ Download from here : https://github.com/BerkieBb/qb-target
 
 # Add to Config.BoxZones
 
-```["jewelheist"] = {
+        ["jewelheist"] = {
         name = "jewelheist",
         coords = vector3(-595.8919, -283.6023, 50.3237),
         length = 1.00,
@@ -25,6 +25,7 @@ Download from here : https://github.com/BerkieBb/qb-target
         },
         distance = 5.0
     },
+    
     ["jewelheistdoor"] = {
         name = "jewelheistdoor",
         coords = vector3(-619.9963, -223.90, 38.3175),
@@ -43,7 +44,7 @@ Download from here : https://github.com/BerkieBb/qb-target
             },
         },
         distance = 5.0
-    },```
+    },
 
 # Add to Config.TargetModels
 
