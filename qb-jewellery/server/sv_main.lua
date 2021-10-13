@@ -181,11 +181,11 @@ end)
 QBCore.Functions.CreateCallback('qb-jewellery:server:ExchangeSuccess2', function(source, cb)
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
-    local ItemData = Player.Functions.GetItemByName("security_card_03")
+    local ItemData = Player.Functions.GetItemByName("security_card_04")
 
     if ItemData ~= nil then
-        Player.Functions.RemoveItem("security_card_03", 1)
-        TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items["security_card_03"], "remove")
+        Player.Functions.RemoveItem("security_card_04", 1)
+        TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items["security_card_04"], "remove")
     end
 end)
 
@@ -201,9 +201,9 @@ QBCore.Functions.CreateCallback('qb-jewellery:server:HasHack', function(source, 
     end
 end)
 
-QBCore.Functions.CreateUseableItem("security_card_03", function(source, item)
+QBCore.Functions.CreateUseableItem("security_card_04", function(source, item)
     local Player = QBCore.Functions.GetPlayer(source)
-	if Player.Functions.GetItemByName('security_card_03') ~= nil then
+	if Player.Functions.GetItemByName('security_card_04') ~= nil then
         TriggerClientEvent("qb-jewellery:client:UsePinkCard", source)
     end
 end)
