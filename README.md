@@ -1,4 +1,4 @@
-Version 2.0 by MonkeyWhisper#0001
+# Version 2.0 by MonkeyWhisper#0001
 
 # Added qb-target support
 
@@ -71,9 +71,8 @@ Download from here : https://github.com/BerkieBb/qb-target
 
 https://imgur.com/gkzpoB2
 
-Version 1.0 by Lion Heart
 
-# Jewellery Store Robbery Reworked
+# Jewellery Store Robbery Reworked Version 1.0 by Lion Heart
 Reworked jewellery store robbery for qbus base. Players now have to hack the security system on the roof to gain access to the store.
 After 90 seconds the store goes into lockdown and the front door is locked again. Without a security card the robbers are trapped inside.
 
