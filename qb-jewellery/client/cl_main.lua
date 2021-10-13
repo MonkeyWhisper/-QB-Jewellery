@@ -40,24 +40,20 @@ AddEventHandler('QBCore:Client:OnPlayerUnload', function()
     isLoggedIn = false
 end)
 
-Citizen.CreateThread(function()
-    while true do
+RegisterNetEvent('qb-jewellery:client:startbreakinglass')
+AddEventHandler('qb-jewellery:client:startbreakinglass', function()
         local ped = PlayerPedId()
         local pos = GetEntityCoords(ped)
         inRange = false
 
         if QBCore ~= nil and isLoggedIn then
-            --PlayerData = QBCore.Functions.GetPlayerData()
             for case,_ in pairs(Config.Locations) do
                 local dist = #(pos - vector3(Config.Locations[case]["coords"]["x"], Config.Locations[case]["coords"]["y"], Config.Locations[case]["coords"]["z"]))
                 local storeDist = #(pos - vector3(Config.JewelleryLocation["coords"]["x"], Config.JewelleryLocation["coords"]["y"], Config.JewelleryLocation["coords"]["z"]))
                 if dist < 30 then
                     inRange = true
-
                     if dist < 0.6 then
                         if not Config.Locations[case]["isBusy"] and not Config.Locations[case]["isOpened"] then
-                            DrawText3Ds(Config.Locations[case]["coords"]["x"], Config.Locations[case]["coords"]["y"], Config.Locations[case]["coords"]["z"], '[E] Smash display case')
-                            if IsControlJustPressed(0, Keys["E"]) then
                                 QBCore.Functions.TriggerCallback('qb-jewellery:server:getCops', function(cops)
                                     if cops >= Config.RequiredCops then
                                         if validWeapon() then
@@ -69,7 +65,7 @@ Citizen.CreateThread(function()
                                         QBCore.Functions.Notify('There are not enough cops...', 'error')
                                     end                
                                 end)
-                            end
+                            
                         end
                     end
                 end
@@ -81,21 +77,16 @@ Citizen.CreateThread(function()
         end
 
         Citizen.Wait(3)
-    end
 end)
 
-Citizen.CreateThread(function()
-    while true do
-        Citizen.Wait(1)
-        if isLoggedIn then
+RegisterNetEvent('qb-jewellery:client:startheist')
+AddEventHandler('qb-jewellery:client:startheist', function()
+        Citizen.Wait(100)
             local pos = GetEntityCoords(PlayerPedId())
-            -- -623.1538, -216.4099, 53.54401,
             local dist = #(pos - vector3(-596.2597, -283.8713, 50.323726))
             if dist < 3 then
                 DrawMarker(2, -596.2597, -283.8713, 50.323726 -0.2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.1, 0.05, 255, 255, 255, 255, false, false, false, 1, false, false, false)
                 if dist < 1 then
-                    DrawText3Ds(-596.2597, -283.8713, 50.323726, '~g~[E]~s~ - Hack Security System')
-                    if IsControlJustReleased(0,38) then
                         QBCore.Functions.TriggerCallback('qb-jewellery:server:getCops', function(cops)
                             if cops >= Config.RequiredCops then
                             QBCore.Functions.TriggerCallback('qb-jewellery:server:HasHack', function(HasItem)
@@ -104,11 +95,11 @@ Citizen.CreateThread(function()
                                     QBCore.Functions.Progressbar("deliver_reycle_package", "Hacking security...", 15000, false, true, {
                                         disableMovement = true,
                                         disableCarMovement = true,
-                                        disableMouse = false,
+                                        disableMouse = true,
                                         disableCombat = true,
                                     }, {}, {}, {}, function() -- Done
                                         TriggerEvent("mhacking:show")
-                                        TriggerEvent("mhacking:start", math.random(3, 4), 13, HackingSuccess)
+                                        TriggerEvent("mhacking:start", math.random(5, 6), 13, HackingSuccess)
                                         ClearPedTasks(PlayerPedId())
                                     end, function() -- CANCEL
                                         ClearPedTasks(PlayerPedId())
@@ -121,13 +112,10 @@ Citizen.CreateThread(function()
                                 QBCore.Functions.Notify('There are not enough cops...', 'error')
                             end    
                         end)
-                    end
                 end
             else
                 Citizen.Wait(2000)
             end
-        end
-    end
 end)
 
 RegisterNetEvent('qb-jewellery:client:UsePinkCard')
@@ -143,7 +131,7 @@ AddEventHandler('qb-jewellery:client:UsePinkCard', function()
             disableCombat = true,
         }, {}, {}, {}, function() -- Done
             ExchangeSuccess2()
-            QBCore.Functions.Notify('You unlocked the front door', 'success')
+            QBCore.Functions.Notify('Doors system disabled. You unlocked the front door, run!', 'success')
         end)
     end
 end)
@@ -163,12 +151,12 @@ function ExchangeSuccess()
 	QBCore.Functions.TriggerCallback('qb-jewellery:server:ExchangeSuccess', function(result)
 	end)
     -- open ndoor
-    TriggerServerEvent('qb-doorlock:server:updateState', 137, false)
+    TriggerServerEvent('qb-doorlock:server:updateState', 2, false)
 
     -- close door after 1.5 minutes
     Citizen.Wait(90000)
-    QBCore.Functions.Notify('The door is locked!', 'error')
-    TriggerServerEvent('qb-doorlock:server:updateState', 137, true)
+    QBCore.Functions.Notify('Cops are on the way! Doors are now locked.', 'error')
+    TriggerServerEvent('qb-doorlock:server:updateState', 2, true)
 end
 
 function ExchangeSuccess2()
@@ -176,7 +164,7 @@ function ExchangeSuccess2()
 	QBCore.Functions.TriggerCallback('qb-jewellery:server:ExchangeSuccess2', function(result)
 	end)
     -- open ndoor
-    TriggerServerEvent('qb-doorlock:server:updateState', 137, false)
+    TriggerServerEvent('qb-doorlock:server:updateState', 2, false)
 end
 
 function ExchangeFail()
@@ -247,28 +235,22 @@ function smashVitrine(k)
         end, "isOpened", true, k)
         QBCore.Functions.TriggerCallback('qb-jewellery:server:setVitrineState', function(result)
         end, "isBusy", false, k)
-        -- TriggerServerEvent('qb-jewellery:server:setVitrineState', "isOpened", true, k)
-        -- TriggerServerEvent('qb-jewellery:server:setVitrineState', "isBusy", false, k)
         QBCore.Functions.TriggerCallback('qb-jewellery:vitrineReward', function()
         end)
         QBCore.Functions.TriggerCallback('qb-jewellery:server:setTimeout', function(result)
         end)
         QBCore.Functions.TriggerCallback('qb-jewellery:server:PoliceAlertMessage', function(result)
         end, "Jeweler robbery", plyCoords, true)
-        -- TriggerServerEvent('qb-jewellery:server:setTimeout')
-        -- TriggerServerEvent('qb-jewellery:server:PoliceAlertMessage', "Jeweler robbery", plyCoords, false)
         smashing = false
         TaskPlayAnim(ped, animDict, "exit", 3.0, 3.0, -1, 2, 0, 0, 0, 0)
     end, function() -- Cancel
         QBCore.Functions.TriggerCallback('qb-jewellery:server:setVitrineState', function(result)
         end, "isBusy", false, k)
-        -- TriggerServerEvent('qb-jewellery:server:setVitrineState', "isBusy", false, k)
         TaskPlayAnim(ped, animDict, "exit", 3.0, 3.0, -1, 2, 0, 0, 0, 0)
         smashing = false
     end)
     QBCore.Functions.TriggerCallback('qb-jewellery:server:setVitrineState', function(result)
     end, "isBusy", true, k)
-    -- TriggerServerEvent('qb-jewellery:server:setVitrineState', "isBusy", true, k)
 
     Citizen.CreateThread(function()
         while smashing do
@@ -356,7 +338,7 @@ AddEventHandler('qb-jewellery:client:PoliceAlertMessage', function(title, coords
                 details = {
                     [1] = {
                         icon = '<i class="fas fa-gem"></i>',
-                        detail = "Vangelico Juwelier",
+                        detail = "Vangelico Jewellery",
                     },
                     [2] = {
                         icon = '<i class="fas fa-video"></i>',
